@@ -14,4 +14,5 @@
 
 ```shell
 ~$ docker build -t bitcoind:0.18.1 -f Dockerfile.cert-bundle-slim .
+~$d docker run -d bitcoind:0.18.1
 ```
