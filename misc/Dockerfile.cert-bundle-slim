@@ -1,0 +1,35 @@
+FROM ubuntu:18.04
+MAINTAINER Florent Dufour "florent.dufour@univ-lorraine.fr"
+
+# Install required dependencies
+RUN apt-get update -q \
+  && apt-get upgrade -yq \
+  && apt-get install -y \
+  git \
+  fish \
+  vim \
+  python3 \
+  python3-pip
+
+# Install cert-tools
+WORKDIR /tmp
+RUN git clone --verbose https://github.com/blockchain-certificates/cert-tools.git cert-tools
+WORKDIR /tmp/cert-tools
+RUN pip3 install .
+RUN mkdir -p /cert-tools
+
+# Install cert-issuer
+WORKDIR /tmp
+RUN git clone --verbose https://github.com/blockchain-certificates/cert-issuer.git cert-issuer
+WORKDIR /tmp/cert-issuer
+RUN pip3 install -q .
+
+# Cleanup
+RUN apt-get autoremove -y
+RUN rm -rf /tmp/* \
+  && rm -rf /root/.cache  \
+  && rm -rf /var/cache/* \
+  && rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+WORKDIR /
+ENTRYPOINT fish
