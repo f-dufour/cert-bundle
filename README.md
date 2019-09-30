@@ -2,14 +2,6 @@
 cert-bundle
 </center>
 
-
-----
-
-- TOC
-{:toc}
-
-----
-
 # Introduction
 
 This bundles the pipeline for creating and issung Blockcerts. The bundle is a Docker image build from the Dockerfile. It can be used as a standalone linux machine in which all the Blockcerts components and dependencies are properly installed and configured or as a command line utility that can automatically perform all the issuing steps and output blockchain certificates to the specified directory.
