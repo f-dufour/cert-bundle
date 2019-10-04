@@ -1,6 +1,9 @@
 FROM ubuntu:18.04
 MAINTAINER Florent Dufour "florent.dufour@univ-lorraine.fr"
 
+LABEL maintainer="florent.dufour@univ-lorraine.fr"
+LABEL description="Pipeline for creating and issing blockchain certificates with the Blockcerts standard"
+
 #ARG CHAIN # regtest, tesnet, mainnet
 #ARG ROSTER # The CSV file for participants
 
@@ -33,7 +36,7 @@ RUN apt-get update -q \
 #RUN pip3 install --upgrade pip setuptools
 
 # config system
-COPY resources/config/config.fish /root/.config/fish
+COPY resources/config/config.fish /root/.config/
 #default to UTF8 character set (avoid ascii decode exceptions raised by python)
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
@@ -58,8 +61,7 @@ WORKDIR /tmp/bitcoin
 RUN git checkout tags/v0.18.1
 RUN ./autogen.sh \
   && ./configure CPPFLAGS="-I${BDB_PREFIX}/include/ -O2" LDFLAGS="-L${BDB_PREFIX}/lib/" --without-gui
-RUN make \
-  && make install
+RUN make && make install
 
 # Install cert-tools
 WORKDIR /tmp
