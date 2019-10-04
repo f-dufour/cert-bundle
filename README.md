@@ -1,19 +1,13 @@
-<center style="font-size:3em">
-cert-bundle
-</center>
-
 # Introduction
 
 This bundles the pipeline for creating and issung Blockcerts. The bundle is a Docker image build from the Dockerfile. It can be used as a standalone linux machine in which all the Blockcerts components and dependencies are properly installed and configured or as a command line utility that can automatically perform all the issuing steps and output blockchain certificates to the specified directory.
 
 # Build
 
-To build the :whale: image:
+To build the :whale: image, clone and cd ino the directory, then:
 
 ```shell
-~$ git clone https://gitlab.univ-lorraine.fr/dufour18/cert-bundle-docker.git cert-bundle
-~$ cd cert-bundle/
-~$ docker build -t cert-bundle:latest .
+~$ docker build -t cert-bundle .
 ```
 
 :warning: As it will  build bitcoin core and Berkeley DB from source, it is recommended to allocate min. 2GB of RAM to docker.
@@ -42,13 +36,6 @@ To test building the image without compiling bitcoin core and Berkeleydb, one ca
 ~$ docker build -t cert-bundle:slim -f Dockerfile.cert-bundle-slim .
 ```
 
-To run a bitcoin node that has nothing to do wth blockcerts (i.e. to maintain the blockchain state):
-
-```shell
-~$ cd misc
-~$ docker build -t bitcoind:0.18.1 -f Dockerfile.bitcoin .
-```
-
 # Usage
 
 cert-bundle requires the bitcoin blockchain to be available. The blockchain is stored on an external hard drive, inside the `bitcoin` subfolder. This latter also contains the configuration file `bitcoin.conf`. For any use of cert-bundle, the blockchain has to be mouted inside the container, at the `/root/.bitcoin` location.
@@ -64,15 +51,14 @@ Once the docker image is build, one can run it in interactive mode:
 With the helper script:
 
 ```shell
-~$ chmod +x lauchImage.sh
+~$ chmod +x launchImage.sh
 ~$ ./launchImage.sh
 ```
 
 Or manually:
 
 ```shell
-~$ docker run -it --rm -v c:/Users/dufour18:/mnt/data -v e:/bitcoin:
-root/.bitcoin/ cert-bundle
+~$ docker run -it --rm -v c:/Users/dufour:/mnt/data -v e:/bitcoin:root/.bitcoin/ cert-bundle
 ```
 
 Once the image is instantiated, we use the term "container".
