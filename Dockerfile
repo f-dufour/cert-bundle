@@ -1,5 +1,4 @@
 FROM ubuntu:18.04
-MAINTAINER Florent Dufour "florent.dufour@univ-lorraine.fr"
 
 LABEL maintainer="florent.dufour@univ-lorraine.fr"
 LABEL description="Pipeline for creating and issing blockchain certificates with the Blockcerts standard"
@@ -33,10 +32,9 @@ RUN apt-get update -q \
   python3 \
   python3-pip \
   && rm -rf /var/lib/apt/lists/*
-#RUN pip3 install --upgrade pip setuptools
 
 # config system
-COPY resources/config/config.fish /root/.config/
+COPY resources/config/config.fish /root/.config/fish
 #default to UTF8 character set (avoid ascii decode exceptions raised by python)
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
@@ -76,7 +74,7 @@ COPY resources/cert-tools /cert-tools
 WORKDIR /tmp
 RUN git clone --verbose https://github.com/blockchain-certificates/cert-issuer.git cert-issuer
 WORKDIR /tmp/cert-issuer
-RUN pip3 install -q .
+RUN pip3 install .
 COPY resources/cert-issuer /cert-issuer
 
 # Cleanup
