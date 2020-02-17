@@ -2,9 +2,11 @@ FROM ubuntu:18.04
 
 LABEL maintainer="florent.dufour@univ-lorraine.fr"
 LABEL description="Pipeline for creating and issing blockchain certificates with the Blockcerts standard"
+LABEL version=0.2
 
-#ARG CHAIN # regtest, tesnet, mainnet
-#ARG ROSTER # The CSV file for participants
+# CLI arguments to pass + default values
+ENV chain testnet 
+ENV roster roster.csv
 
 # Install required dependencies
 RUN apt-get update -q \
@@ -34,19 +36,17 @@ RUN apt-get update -q \
   && rm -rf /var/lib/apt/lists/*
 
 # config system
-COPY resources/config/config.fish /root/.config/fish
-#default to UTF8 character set (avoid ascii decode exceptions raised by python)
+COPY resources/config.fish /root/.config/fish/config.fish
+RUN chsh -s `which fish`
+# default to UTF8 character set (avoid ascii decode exceptions raised by python)
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LC_TYPE en_US.UTF-8
 RUN locale-gen en_US.UTF-8
 
-# Checkout bitcoin source
-WORKDIR /tmp
-RUN git clone --verbose https://github.com/bitcoin/bitcoin.git bitcoin/
-
 # Install Berkley Database
+WORKDIR /tmp
 RUN wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz && tar -xvf db-4.8.30.NC.tar.gz
 WORKDIR /tmp/db-4.8.30.NC/build_unix
 RUN mkdir -p build
@@ -55,6 +55,8 @@ RUN ../dist/configure --disable-shared --enable-cxx --with-pic --prefix=$BDB_PRE
 RUN make install
 
 # Install bitcoin
+WORKDIR /tmp
+RUN git clone --verbose https://github.com/bitcoin/bitcoin.git bitcoin/
 WORKDIR /tmp/bitcoin
 RUN git checkout tags/v0.18.1
 RUN ./autogen.sh \
@@ -68,7 +70,6 @@ WORKDIR /tmp/cert-tools
 RUN pip3 install .
 RUN mkdir -p /cert-tools
 COPY resources/cert-tools /cert-tools
-# Add the roster from the argument
 
 # Install cert-issuer
 WORKDIR /tmp
@@ -85,4 +86,4 @@ RUN rm -rf /tmp/* \
   && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 WORKDIR /
-ENTRYPOINT fish
+CMD [ "fish" ]

@@ -2,7 +2,7 @@
 
 pathBlockchainPhysical="b:/bitcoin"
 pathBlcokchainDocker="/root/.bitcoin"
-pathDataPhysical="c:/Users/dufour18"
+pathDataPhysical="c:/Users/YOU"
 pathDataDocker="/mnt/data"
 
 docker run -it --rm \
